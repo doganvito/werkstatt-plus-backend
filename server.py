@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 import jwt
 import bcrypt
 import base64
-from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
+#import emergentintegrations from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent 
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -27,8 +27,8 @@ db = client[os.environ.get('DB_NAME', 'easywerkstatt')]
 JWT_SECRET = os.environ.get('JWT_SECRET', 'easywerkstatt-secret-key-2024')
 JWT_ALGORITHM = "HS256"
 
-# Emergent LLM Key
-EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY', '')
+# t LLM Key
+T_LLM_KEY = os.environ.get('T_LLM_KEY', '')
 
 # Create the main app
 app = FastAPI(title="EasyWerkstatt API")
@@ -382,13 +382,13 @@ async def analyze_vehicle(vehicle_id: str, current_user: dict = Depends(get_curr
     if not vehicle.get("photos"):
         raise HTTPException(status_code=400, detail="No photos to analyze")
     
-    if not EMERGENT_LLM_KEY:
+    if not T_LLM_KEY:
         raise HTTPException(status_code=500, detail="AI service not configured")
     
     try:
         # Create chat instance
         chat = LlmChat(
-            api_key=EMERGENT_LLM_KEY,
+            api_key=T_LLM_KEY,
             session_id=f"vehicle-analysis-{vehicle_id}",
             system_message="""Du bist ein Experte für Fahrzeugidentifikation und KFZ-Technik. 
             Analysiere die Fahrzeugbilder und extrahiere alle relevanten Informationen:
